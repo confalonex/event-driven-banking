@@ -1,6 +1,7 @@
 package it.alex.kafka.banking.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.alex.kafka.banking.model.SecurityAlertEvent;
 import it.alex.kafka.banking.model.TransactionEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -62,5 +63,19 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, TransactionEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
+    }
+
+    @Bean
+    public ProducerFactory<String, SecurityAlertEvent> securityAlertProducerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, org.springframework.kafka.support.serializer.JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public KafkaTemplate<String, SecurityAlertEvent> securityAlertKafkaTemplate() {
+        return new KafkaTemplate<>(securityAlertProducerFactory());
     }
 }

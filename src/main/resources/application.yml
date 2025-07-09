@@ -12,3 +12,11 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+logging:
+  level:
+    root: ERROR              # tutto il rumore di Spring/Kafka passa a ERROR
+    org.apache.kafka: ERROR  # silenzia i dettagli dei client Kafka
+    it.alex.kafka: INFO      # il tuo package rimane a INFO (quindi visibile)
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%p] %msg%n"
