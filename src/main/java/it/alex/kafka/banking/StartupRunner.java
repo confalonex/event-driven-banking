@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Invia eventi Kafka di test all'avvio dell'applicazione.
+ * Componente eseguito automaticamente all'avvio dell'applicazione.
+ * Invia eventi Kafka di test (transazione e allerta sicurezza) e ne stampa lo storico ricevuto.
  */
 @Component
 @RequiredArgsConstructor
@@ -21,6 +22,12 @@ public class StartupRunner implements CommandLineRunner {
     private final KafkaProducerService producerService;
     private final KafkaSecurityAlertProducerService securityAlertProducerService;
 
+    /**
+     * Metodo eseguito al termine del bootstrap dell'applicazione Spring.
+     * Crea e invia eventi su Kafka, quindi stampa lo storico in memoria.
+     *
+     * @param args argomenti della riga di comando (non utilizzati)
+     */
     @Override
     public void run(String... args) {
         // Evento di transazione
@@ -32,6 +39,7 @@ public class StartupRunner implements CommandLineRunner {
                 LocalDateTime.now()
         );
         producerService.sendTransaction(transaction);
+        System.out.println("Evento transazione inviato: " + transaction);
 
         // Evento di sicurezza
         SecurityAlertEvent alert = new SecurityAlertEvent(
@@ -41,5 +49,6 @@ public class StartupRunner implements CommandLineRunner {
                 LocalDateTime.now()
         );
         securityAlertProducerService.sendAlert(alert);
+        System.out.println("Evento sicurezza inviato : " + alert);
     }
 }

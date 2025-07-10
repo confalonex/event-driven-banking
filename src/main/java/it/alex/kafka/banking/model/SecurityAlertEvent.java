@@ -1,17 +1,19 @@
 package it.alex.kafka.banking.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 /**
  * Rappresenta un evento di allerta di sicurezza su un conto bancario.
  */
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class SecurityAlertEvent {
 
     /** Identificativo univoco dell’allerta */

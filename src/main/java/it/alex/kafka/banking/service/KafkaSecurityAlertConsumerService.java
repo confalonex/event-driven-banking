@@ -1,15 +1,15 @@
 package it.alex.kafka.banking.service;
 
 import it.alex.kafka.banking.model.SecurityAlertEvent;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 /**
  * Servizio responsabile della ricezione e gestione degli eventi di allerta sicurezza da Kafka.
  */
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class KafkaSecurityAlertConsumerService {
 
     /**
@@ -20,10 +20,9 @@ public class KafkaSecurityAlertConsumerService {
     @KafkaListener(
             topics = "security-alerts",
             groupId = "banking-group",
-            containerFactory = "kafkaListenerContainerFactory"
+            containerFactory = "securityAlertListenerContainerFactory"
     )
     public void consumeAlert(SecurityAlertEvent alert) {
-        log.info("Ricevuto evento di sicurezza: {}", alert);
-        // logica di gestione alert qui (per ora solo log)
+        System.out.println("Ricevuto evento di sicurezza: " + alert);
     }
 }

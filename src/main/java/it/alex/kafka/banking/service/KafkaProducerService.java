@@ -2,8 +2,6 @@ package it.alex.kafka.banking.service;
 
 import it.alex.kafka.banking.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +12,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaProducerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaProducerService.class);
     private final KafkaTemplate<String, TransactionEvent> kafkaTemplate;
 
-    /** Nome del topic su cui inviare i messaggi */
+    /**
+     * Nome del topic Kafka per le transazioni.
+     */
     private static final String TOPIC_NAME = "transactions";
 
     /**
-     * Invia un evento di transazione al topic Kafka.
+     * Invia un evento di transazione serializzato come JSON al topic Kafka configurato.
+     * La chiave del messaggio è l'ID della transazione.
      *
-     * @param event Evento da inviare
+     * @param event evento di transazione da inviare
      */
     public void sendTransaction(TransactionEvent event) {
-        logger.info("Invio evento Kafka: {}", event);
         kafkaTemplate.send(TOPIC_NAME, event.getTransactionId(), event);
     }
 }

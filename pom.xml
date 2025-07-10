@@ -6,63 +6,90 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
+
 	<groupId>it.alex.kafka</groupId>
 	<artifactId>event-driven-banking</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>event-driven-banking</name>
-	<description>Demo project for Spring Boot</description>
-	<url/>
+	<description>Event driven banking project using Spring Boot</description>
+	<url>https://github.com/confalonex/event-driven-banking</url>
+
 	<licenses>
-		<license/>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
 	</licenses>
+
 	<developers>
-		<developer/>
+		<developer>
+			<id>alex</id>
+			<name>Alex Confalone</name>
+			<email>confalonealex@gmail.com</email>
+		</developer>
 	</developers>
+
 	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
+		<connection>scm:git:git://github.com/confalonex/event-driven-banking.git</connection>
+		<developerConnection>scm:git:ssh://github.com/confalonex/event-driven-banking.git</developerConnection>
+		<url>https://github.com/confalonex/event-driven-banking</url>
+		<tag>HEAD</tag>
 	</scm>
+
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
 	</properties>
+
 	<dependencies>
+		<!-- Kafka Streams (API native per stream processing) -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka-streams</artifactId>
 		</dependency>
+
+		<!-- Spring Cloud Stream (programmazione basata su eventi) -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream</artifactId>
 		</dependency>
+
+		<!-- Binder per collegare Spring Cloud Stream a Kafka -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
+
+		<!-- Binder per Kafka Streams con Spring Cloud Stream -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream-binder-kafka-streams</artifactId>
 		</dependency>
+
+		<!-- Spring Kafka (producer/consumer Kafka "puri") -->
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
+		<!-- Devtools (hot reload in fase di sviluppo) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- Dipendenze per i test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -79,6 +106,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<!-- Gestione centralizzata delle versioni per Spring Cloud -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -93,6 +122,7 @@
 
 	<build>
 		<plugins>
+			<!-- Plugin per compilazione e supporto annotation processor (Lombok) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -105,22 +135,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<image>
-						<runImage>paketobuildpacks/ubuntu-noble-run-base:latest</runImage>
-					</image>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-
 </project>

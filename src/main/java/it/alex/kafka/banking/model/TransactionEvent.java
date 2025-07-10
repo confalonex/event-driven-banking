@@ -1,17 +1,19 @@
 package it.alex.kafka.banking.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 /**
  * Rappresenta un evento di transazione bancaria da inviare tramite Kafka.
  */
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class TransactionEvent {
 
     /** Identificativo univoco della transazione */
