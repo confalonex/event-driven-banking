@@ -19,7 +19,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StartupRunner implements CommandLineRunner {
 
+    /**
+     * Servizio per l'invio di eventi di transazione a Kafka.
+     */
     private final KafkaProducerService producerService;
+
+    /**
+     * Servizio per l'invio di eventi di allerta sicurezza a Kafka.
+     */
     private final KafkaSecurityAlertProducerService securityAlertProducerService;
 
     /**

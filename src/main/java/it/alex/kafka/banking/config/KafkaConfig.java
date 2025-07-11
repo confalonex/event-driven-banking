@@ -24,6 +24,10 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
+    /**
+     * Indirizzo del broker Kafka.
+     * In un ambiente di produzione, questo dovrebbe essere configurato tramite variabili d'ambiente o file di configurazione.
+     */
     private static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
     /**

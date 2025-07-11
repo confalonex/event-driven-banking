@@ -25,4 +25,4 @@ spring:
 
 logging:
   level:
-    root: ERROR              # tutto il rumore di Spring/Kafka passa a ERROR
+    root: ERROR              # pulisce i log di Spring Boot
