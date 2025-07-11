@@ -2,6 +2,16 @@ spring:
   application:
     name: event-driven-banking
 
+  cloud:
+    stream:
+      bindings:
+        highValueConsumer-in-0:
+          destination: high-value-transactions
+          group: high-value-group
+      kafka:
+        binder:
+          brokers: localhost:9092
+
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
