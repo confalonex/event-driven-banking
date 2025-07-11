@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaProducerService {
 
+    /**
+     * Template Kafka per l'invio di messaggi.
+     * Utilizza una chiave di tipo String e un valore di tipo TransactionEvent.
+     */
     private final KafkaTemplate<String, TransactionEvent> kafkaTemplate;
 
     /**

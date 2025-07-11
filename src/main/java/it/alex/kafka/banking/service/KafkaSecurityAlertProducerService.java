@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaSecurityAlertProducerService {
 
+    /**
+     * Template Kafka per l'invio di eventi di allerta sicurezza.
+     * Utilizza una chiave di tipo String e un valore di tipo SecurityAlertEvent.
+     */
     private final KafkaTemplate<String, SecurityAlertEvent> securityAlertKafkaTemplate;
 
     /**

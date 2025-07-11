@@ -14,33 +14,31 @@ import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.support.serializer.JsonSerde;
 
 /**
- * Defines a Kafka Streams topology that filters high value transactions and
- * outputs them to a dedicated topic. Duplicate transaction IDs are collapsed
- * via a KTable providing a simple idempotency mechanism.
+ * Definisce una topologia Kafka Streams che filtra le transazioni di alto valore e le invia a un topic dedicato.
+ * Gli ID di transazione duplicati vengono gestiti tramite una KTable, fornendo un semplice meccanismo di idempotenza.
  */
 @EnableKafkaStreams
 @Configuration
 public class KafkaStreamsTopology {
 
     /**
-     * Builds the Kafka Streams topology. Events from the {@code transactions}
-     * topic are materialized into a KTable to remove duplicates. Transactions
-     * with amount greater than or equal to 1000 are forwarded to the
-     * {@code high-value-transactions} topic.
+     * Costruisce la topologia Kafka Streams.
+     * Gli eventi provenienti dal topic {@code transactions} vengono materializzati in una KTable per rimuovere i duplicati.
+     * Le transazioni con importo maggiore o uguale a 1000 vengono inoltrate al topic {@code high-value-transactions}.
      */
     @Bean
     public KStream<String, TransactionEvent> highValueTransactionsTopology(StreamsBuilder builder) {
         JsonSerde<TransactionEvent> serde = new JsonSerde<>(TransactionEvent.class);
 
-        // Read stream from 'transactions' topic
+        // Legge gli eventi dal topic "transactions"
         KStream<String, TransactionEvent> input = builder.stream("transactions",
                 Consumed.with(Serdes.String(), serde));
 
-        // Materialize as table to achieve idempotency on transactionId
+        // Materializza gli eventi in una KTable per rimuovere i duplicati
         KTable<String, TransactionEvent> table = input.groupByKey()
                 .reduce((agg, val) -> val, Materialized.with(Serdes.String(), serde));
 
-        // Filter for high value transactions and send to dedicated topic
+        // Filtra le transazioni di alto valore e le invia al topic "high-value-transactions"
         table.toStream()
              .filter((key, value) -> value.getAmount() >= 1000)
              .to("high-value-transactions", Produced.with(Serdes.String(), serde));

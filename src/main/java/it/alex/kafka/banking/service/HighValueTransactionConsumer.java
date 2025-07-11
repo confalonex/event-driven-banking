@@ -7,16 +7,14 @@ import org.springframework.context.annotation.Configuration;
 import java.util.function.Consumer;
 
 /**
- * Spring Cloud Stream consumer that handles high value transactions emitted by
- * the Kafka Streams topology.
+ * Consumer di Spring Cloud Stream che gestisce le transazioni di alto valore emesse dalla topologia di Kafka Streams.
  */
 @Configuration
 public class HighValueTransactionConsumer {
 
     /**
-     * Logs incoming high value transactions. Using Spring Cloud Stream allows
-     * the consumer to be easily scaled by running multiple instances in the
-     * same consumer group.
+     * Esegue il log delle transazioni di alto valore in arrivo.
+     * L'utilizzo di Spring Cloud Stream consente di scalare facilmente il consumer eseguendo più istanze nello stesso gruppo di consumer.
      */
     @Bean
     public Consumer<TransactionEvent> highValueConsumer() {
