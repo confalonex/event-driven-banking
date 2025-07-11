@@ -33,7 +33,7 @@ public class StartupRunner implements CommandLineRunner {
      * Metodo eseguito al termine del bootstrap dell'applicazione Spring.
      * Crea e invia eventi su Kafka, quindi stampa lo storico in memoria.
      *
-     * @param args argomenti della riga di comando (non utilizzati)
+     * @param args argomenti della riga di comando
      */
     @Override
     public void run(String... args) {
