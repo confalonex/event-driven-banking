@@ -1,15 +1,26 @@
 # Event Driven Banking
 
-Questo progetto dimostra un'architettura **event-driven** basata su Apache Kafka per la generazione e l'elaborazione di eventi in tempo reale. L'applicazione sfrutta Spring Boot insieme a **Kafka Streams** e **Spring Cloud Stream** per mostrare come implementare producer, consumer e flussi di elaborazione con resilienza e scalabilità.
+Questo progetto dimostra un'architettura **event-driven** basata su **Apache Kafka**, implementata con **Spring Boot**, **Kafka Streams** e **Spring Cloud Stream** per simulare l'invio e l'elaborazione in tempo reale di transazioni bancarie e alert di sicurezza.
 
-## Architettura
+## Funzionalità principali
 
-- **Produttori Kafka**: inviano eventi di `TransactionEvent` e `SecurityAlertEvent` verso i relativi topic.
-- **Consumatori Kafka**: ricevono gli eventi e li elaborano in tempo reale.
-- **Kafka Streams**: un topology dedicata filtra le transazioni con importo elevato e le pubblica sul topic `high-value-transactions` applicando una logica di idempotenza tramite `KTable`.
-- **Spring Cloud Stream**: un `Consumer` gestisce gli eventi provenienti dal topic `high-value-transactions`, permettendo di scalare orizzontalmente il servizio grazie al meccanismo di gruppi di consumer.
+* **Produttori Kafka** per eventi:
 
-Di seguito uno schema semplificato:
+    * `TransactionEvent`
+    * `SecurityAlertEvent`
+
+* **Consumatori Kafka** che elaborano gli eventi in tempo reale.
+
+* **Kafka Streams**:
+
+    * Topology per filtrare transazioni di valore elevato (≥ 1000€).
+    * Idempotenza garantita tramite `KTable`.
+
+* **Spring Cloud Stream**:
+
+    * Consumer scalabile per gli eventi filtrati sul topic `high-value-transactions`.
+
+## Schema architetturale semplificato
 
 ```
 TransactionEvent ----> [transactions topic] ----> Kafka Streams ---> [high-value-transactions topic] ---> Cloud Stream Consumer
@@ -18,40 +29,45 @@ SecurityAlertEvent --> [security-alerts topic] --> Kafka Listener
 
 ## Configurazione
 
-Le principali impostazioni si trovano in `application.yml`:
+La configurazione è gestita tramite [`application.yml`](src/main/resources/application.yml):
 
-- `spring.kafka` definisce i parametri base di broker, producer e consumer.
-- `spring.cloud.stream` configura il binding del consumer Spring Cloud Stream verso `high-value-transactions`.
+* **Kafka**: parametri di connessione per producer e consumer (`spring.kafka`).
+* **Spring Cloud Stream**: binding per il consumer scalabile (`spring.cloud.stream`).
 
-Nel file `docker-compose.yml` sono disponibili i container di **Kafka** e **Zookeeper** per l'esecuzione locale.
+Per eseguire **Kafka** e **Zookeeper** localmente, utilizzare il file [`docker-compose.yml`](docker-compose.yml).
 
-## Resilienza e idempotenza
+## Resilienza e scalabilità
 
-- Il topology Kafka Streams utilizza un `KTable` per memorizzare le transazioni in base al loro `transactionId`. Questo meccanismo assicura che eventi duplicati vengano sovrascritti, fornendo idempotenza.
-- Kafka garantisce la replica dei dati sui topic e, in combinazione con Kafka Streams, assicura la ripartenza in caso di fault (state store su Kafka changelog topic).
-- I consumer Spring Cloud Stream possono essere scalati su più istanze appartenenti allo stesso gruppo, sfruttando la partizionamento dei topic per la scalabilità.
+* Idempotenza con `KTable` per gestire duplicati basati su `transactionId`.
+* Repliche Kafka garantiscono persistenza e fault-tolerance.
+* Consumer scalabili grazie a gruppi consumer Spring Cloud Stream.
 
-## Avvio del progetto
+## Avvio rapido
 
-1. Avviare Kafka tramite Docker Compose:
+### 1. Avvia Kafka con Docker
 
 ```bash
 docker-compose up -d
 ```
 
-2. Avviare l'applicazione Spring Boot:
+### 2. Esegui l'applicazione
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Durante l'avvio, lo `StartupRunner` invierà alcuni eventi di test. Nel log verranno mostrati i messaggi elaborati dalla topologia Kafka Streams e dal consumer Spring Cloud Stream.
+All'avvio, lo `StartupRunner` invierà automaticamente eventi di esempio. Controlla i log per verificare l'elaborazione.
 
-## Test
+## Eseguire i test
 
-Il progetto include un semplice test di caricamento del contesto e un test per la topologia Kafka Streams (`HighValueTransactionsTopologyTest`). Eseguire:
+Il progetto contiene test unitari e di integrazione per la verifica della topologia Kafka Streams:
 
 ```bash
 ./mvnw test
 ```
 
+## Requisiti
+
+* Java 17
+* Maven 3
+* Docker

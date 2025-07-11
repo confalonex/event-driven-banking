@@ -1,7 +1,6 @@
 package it.alex.kafka.banking.service;
 
 import it.alex.kafka.banking.model.TransactionEvent;
-import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
  * Servizio responsabile della ricezione e gestione degli eventi di transazione da Kafka.
  */
 @Service
-@RequiredArgsConstructor
 public class KafkaConsumerService {
 
     /**

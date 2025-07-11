@@ -30,14 +30,6 @@ public class KafkaConfig {
      */
     private static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
-    /**
-     * Mapper JSON per la serializzazione/deserializzazione.
-     */
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
     // ─────────────────────────────────────────────
     // PRODUCER per TransactionEvent
     // ─────────────────────────────────────────────
