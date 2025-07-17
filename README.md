@@ -1,73 +1,98 @@
-# Event Driven Banking
+# Event‑Driven Banking
 
-Questo progetto dimostra un'architettura **event-driven** basata su **Apache Kafka**, implementata con **Spring Boot**, **Kafka Streams** e **Spring Cloud Stream** per simulare l'invio e l'elaborazione in tempo reale di transazioni bancarie e alert di sicurezza.
+> **Architettura event‑driven con Apache Kafka, Kafka Streams e Spring Boot**
+
+## Introduzione
+
+Questo progetto dimostra come realizzare un microservizio bancario *event‑driven* capace di gestire transazioni e alert di sicurezza **in tempo reale**.
+
+* **Spring Boot 3.5** – microservizio standalone.
+* **Apache Kafka** – broker di messaggi distribuito.
+* **Kafka Streams** – filtraggio e trasformazioni sullo stream di eventi.
+* **Spring Cloud Stream** – consumer reattivi e scalabili.
+* **Docker Compose** – avvio locale di Kafka (modalità **KRaft**, **senza ZooKeeper**).
 
 ## Funzionalità principali
 
-* **Produttori Kafka** per eventi:
+| Evento               | Producer                            | Topic             | Stream Processing                                            | Consumer finale                                        |
+| -------------------- | ----------------------------------- | ----------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
+| `TransactionEvent`   | `KafkaProducerService`              | `transactions`    | Topologia `KafkaStreamsTopology` filtra transazioni ≥ 1000 € | `HighValueTransactionConsumer` via Spring Cloud Stream |
+| `SecurityAlertEvent` | `KafkaSecurityAlertProducerService` | `security-alerts` | —                                                            | `KafkaSecurityAlertConsumerService` via Spring Kafka   |
 
-    * `TransactionEvent`
-    * `SecurityAlertEvent`
-
-* **Consumatori Kafka** che elaborano gli eventi in tempo reale.
-
-* **Kafka Streams**:
-
-    * Topology per filtrare transazioni di valore elevato (≥ 1000€).
-    * Idempotenza garantita tramite `KTable`.
-
-* **Spring Cloud Stream**:
-
-    * Consumer scalabile per gli eventi filtrati sul topic `high-value-transactions`.
-
-## Schema architetturale semplificato
+### Flusso semplificato
 
 ```
-TransactionEvent ----> [transactions topic] ----> Kafka Streams ---> [high-value-transactions topic] ---> Cloud Stream Consumer
-SecurityAlertEvent --> [security-alerts topic] --> Kafka Listener
+TransactionEvent  ──▶  transactions  ──▶  [Kafka Streams]  ──▶  high-value-transactions  ──▶  Cloud Stream Consumer
+SecurityAlertEvent ─▶  security-alerts ─▶  Spring Kafka Listener
 ```
-
-## Configurazione
-
-La configurazione è gestita tramite [`application.yml`](src/main/resources/application.yml):
-
-* **Kafka**: parametri di connessione per producer e consumer (`spring.kafka`).
-* **Spring Cloud Stream**: binding per il consumer scalabile (`spring.cloud.stream`).
-
-Per eseguire **Kafka** e **Zookeeper** localmente, utilizzare il file [`docker-compose.yml`](docker-compose.yml).
-
-## Resilienza e scalabilità
-
-* Idempotenza con `KTable` per gestire duplicati basati su `transactionId`.
-* Repliche Kafka garantiscono persistenza e fault-tolerance.
-* Consumer scalabili grazie a gruppi consumer Spring Cloud Stream.
 
 ## Avvio rapido
 
-### 1. Avvia Kafka con Docker
+1. **Prerequisiti**: Java 17, Maven 3, Docker.
+2. **Avvia Kafka** (container KRaft):
 
-```bash
-docker-compose up -d
+   ```bash
+   docker-compose up -d
+   ```
+3. **Avvia il microservizio**:
+
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+   All’avvio `StartupRunner` pubblica alcuni eventi di esempio; osserva i log per verificarne l’elaborazione.
+
+## Configurazione
+
+Le proprietà principali sono in `src/main/resources/application.yml`:
+
+```yaml
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer: …
+  cloud:
+    stream:
+      bindings:
+        highValueTransactions-in-0:
+          destination: high-value-transactions
 ```
 
-### 2. Esegui l'applicazione
+Modifica `bootstrap-servers` se l’istanza Kafka risiede altrove.
 
-```bash
-./mvnw spring-boot:run
+## Struttura del progetto
+
 ```
-
-All'avvio, lo `StartupRunner` invierà automaticamente eventi di esempio. Controlla i log per verificare l'elaborazione.
+src/
+  main/java/it/alex/kafka/banking/              # codice applicativo
+    config/                                     # configurazioni Kafka/KStreams
+    model/                                      # DTO degli eventi
+    service/                                    # producer & consumer Spring Kafka/Cloud Stream
+    streams/                                    # topologie Kafka Streams
+  test/java/…                                   # test unitari e d’integrazione
+  resources/                                    # application.yml, logback, …
+```
 
 ## Eseguire i test
-
-Il progetto contiene test unitari e di integrazione per la verifica della topologia Kafka Streams:
 
 ```bash
 ./mvnw test
 ```
 
-## Requisiti
+* **Kafka Streams Topology Test**: verifica il filtro delle transazioni a valore elevato.
+* **Spring Context Test**: assicura che l’applicazione si avvii correttamente.
 
-* Java 17
-* Maven 3
-* Docker
+## Resilienza e scalabilità
+
+* **Idempotenza**: duplicati gestiti tramite `KTable` keyed by `transactionId`.
+* **Fault‑tolerance**: log Kafka replicato; state‑store RocksDB gestito da Kafka Streams.
+* **Scalabilità**: consumer Cloud Stream in più istanze tramite *consumer groups*.
+
+## Contribuire
+
+1. Fork → branch feature → PR.
+2. Scrivere test e documentazione per ogni nuova funzionalità.
+
+## Licenza
+
+Distribuito sotto **MIT License**; vedi `LICENSE`. 
