@@ -1,5 +1,6 @@
 package it.alex.kafka.banking.service;
 
+import it.alex.kafka.banking.config.Topics;
 import it.alex.kafka.banking.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,12 +17,7 @@ public class KafkaProducerService {
      * Template Kafka per l'invio di messaggi.
      * Utilizza una chiave di tipo String e un valore di tipo TransactionEvent.
      */
-    private final KafkaTemplate<String, TransactionEvent> kafkaTemplate;
-
-    /**
-     * Nome del topic Kafka per le transazioni.
-     */
-    private static final String TOPIC_NAME = "transactions";
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * Invia un evento di transazione serializzato come JSON al topic Kafka configurato.
@@ -30,6 +26,6 @@ public class KafkaProducerService {
      * @param event evento di transazione da inviare
      */
     public void sendTransaction(TransactionEvent event) {
-        kafkaTemplate.send(TOPIC_NAME, event.getTransactionId(), event);
+        kafkaTemplate.send(Topics.TRANSACTIONS, event.getTransactionId(), event);
     }
 }

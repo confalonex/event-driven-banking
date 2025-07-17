@@ -1,6 +1,8 @@
 spring:
   application:
     name: event-driven-banking
+  profiles:
+    active: dev
 
   cloud:
     stream:
@@ -14,15 +16,24 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: banking-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    streams:
+      state-dir: /tmp/kafka-streams
+      properties:
+        cleanup.on.start: true
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: banking-group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: it.alex.kafka.banking.model # specifica i pacchetti fidati per la deserializzazione
+        spring.json.value.default.type: it.alex.kafka.banking.model.TransactionEvent # specifica il tipo di evento da deserializzare
 
 logging:
   level:
-    root: ERROR              # pulisce i log di Spring Boot
+    root: ERROR # pulisce i log di Spring Boot
+    org.apache.kafka.streams.processor.internals.StateDirectory: OFF # disabilita i log di Kafka Streams
+    it.alex.kafka.banking: INFO # log della nostra applicazione

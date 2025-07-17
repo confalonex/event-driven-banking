@@ -5,7 +5,9 @@ import it.alex.kafka.banking.model.TransactionEvent;
 import it.alex.kafka.banking.service.KafkaProducerService;
 import it.alex.kafka.banking.service.KafkaSecurityAlertProducerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -16,7 +18,9 @@ import java.util.UUID;
  * Invia eventi Kafka di test (transazione e allerta sicurezza) e ne stampa lo storico ricevuto.
  */
 @Component
+@Profile("dev")
 @RequiredArgsConstructor
+@Slf4j
 public class StartupRunner implements CommandLineRunner {
 
     /**
@@ -46,7 +50,7 @@ public class StartupRunner implements CommandLineRunner {
                 LocalDateTime.now()
         );
         producerService.sendTransaction(transaction);
-        System.out.println("Evento transazione inviato: " + transaction);
+        log.info("Evento transazione inviato: {}", transaction);
 
         // Evento di sicurezza
         SecurityAlertEvent alert = new SecurityAlertEvent(
@@ -56,6 +60,6 @@ public class StartupRunner implements CommandLineRunner {
                 LocalDateTime.now()
         );
         securityAlertProducerService.sendAlert(alert);
-        System.out.println("Evento sicurezza inviato : " + alert);
+        log.info("Evento sicurezza inviato: {}", alert);
     }
 }

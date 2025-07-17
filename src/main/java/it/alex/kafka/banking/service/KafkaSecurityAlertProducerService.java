@@ -1,5 +1,6 @@
 package it.alex.kafka.banking.service;
 
+import it.alex.kafka.banking.config.Topics;
 import it.alex.kafka.banking.model.SecurityAlertEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,16 +20,11 @@ public class KafkaSecurityAlertProducerService {
     private final KafkaTemplate<String, SecurityAlertEvent> securityAlertKafkaTemplate;
 
     /**
-     * Nome del topic Kafka per eventi di sicurezza.
-     */
-    private static final String TOPIC_NAME = "security-alerts";
-
-    /**
      * Invia un evento di sicurezza al topic Kafka.
      *
      * @param alert evento di allerta sicurezza da inviare
      */
     public void sendAlert(SecurityAlertEvent alert) {
-        securityAlertKafkaTemplate.send(TOPIC_NAME, alert.getAlertId(), alert);
+        securityAlertKafkaTemplate.send(Topics.SECURITY_ALERTS, alert.getAlertId(), alert);
     }
 }

@@ -1,5 +1,6 @@
 package it.alex.kafka.banking.streams;
 
+import it.alex.kafka.banking.config.Topics;
 import it.alex.kafka.banking.model.TransactionEvent;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -30,18 +31,17 @@ public class KafkaStreamsTopology {
     public KStream<String, TransactionEvent> highValueTransactionsTopology(StreamsBuilder builder) {
         JsonSerde<TransactionEvent> serde = new JsonSerde<>(TransactionEvent.class);
 
-        // Legge gli eventi dal topic "transactions"
-        KStream<String, TransactionEvent> input = builder.stream("transactions",
-                Consumed.with(Serdes.String(), serde));
+        // Consuma gli eventi dal topic "transactions" con una chiave di tipo String e un valore di tipo TransactionEvent
+        KStream<String, TransactionEvent> input = builder.stream(
+                Topics.TRANSACTIONS, Consumed.with(Serdes.String(), serde));
 
-        // Materializza gli eventi in una KTable per rimuovere i duplicati
-        KTable<String, TransactionEvent> table = input.groupByKey()
-                .reduce((agg, val) -> val, Materialized.with(Serdes.String(), serde));
+        // Raggruppa gli eventi per chiave (ID transazione) e riduce i duplicati mantenendo l'ultimo evento
+        KTable<String, TransactionEvent> table = input.groupByKey().reduce((
+                agg, val) -> val, Materialized.with(Serdes.String(), serde));
 
-        // Filtra le transazioni di alto valore e le invia al topic "high-value-transactions"
-        table.toStream()
-             .filter((key, value) -> value.getAmount() >= 1000)
-             .to("high-value-transactions", Produced.with(Serdes.String(), serde));
+        // Filtra le transazioni di alto valore (importo >= 1000) e le invia al topic "high-value-transactions"
+        table.toStream().filter((key, value) -> value.getAmount() >= 1000).to(
+                Topics.HIGH_VALUE_TRANSACTIONS, Produced.with(Serdes.String(), serde));
 
         return input;
     }
