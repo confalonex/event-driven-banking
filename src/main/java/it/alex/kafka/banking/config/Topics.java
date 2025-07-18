@@ -11,9 +11,6 @@ public final class Topics {
     /** Topic per gli eventi di allerta di sicurezza */
     public static final String SECURITY_ALERTS = "security-alerts";
 
-    /** Topic per le transazioni di alto valore (amount >= 1000) */
+    /** Topic per le transazioni di alto valore (amount>=1000) */
     public static final String HIGH_VALUE_TRANSACTIONS = "high-value-transactions";
-
-    // Classe di utilità non istanziabile
-    private Topics() { }
 }

@@ -25,7 +25,7 @@ public class TransactionEvent {
     /** Importo della transazione */
     private double amount;
 
-    /** Tipo dell’operazione (es. "deposit", "withdrawal") */
+    /** Tipo dell’operazione */
     private String type;
 
     /** Timestamp di generazione dell’evento */

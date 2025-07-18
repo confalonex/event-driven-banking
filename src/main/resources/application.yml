@@ -1,33 +1,33 @@
 spring:
   application:
-    name: event-driven-banking
+    name: event-driven-banking # Nome dell'applicazione
   profiles:
-    active: dev
+    active: dev # Profilo attivo per l'ambiente di sviluppo
 
   cloud:
     stream:
       bindings:
         highValueConsumer-in-0:
-          destination: high-value-transactions
-          group: high-value-group
+          destination: high-value-transactions # Nome del topic Kafka per le transazioni ad alto valore
+          group: high-value-group # Gruppo consumer per le transazioni ad alto valore
       kafka:
         binder:
-          brokers: localhost:9092
+          brokers: localhost:9092 # Broker Kafka
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9092 # Indirizzo del broker Kafka
     streams:
-      state-dir: /tmp/kafka-streams
+      state-dir: /tmp/kafka-streams # Directory per lo stato di Kafka Streams
       properties:
-        cleanup.on.start: true
+        cleanup.on.start: true # Pulisce lo stato all'avvio
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer # Serializzatore per la chiave del produttore
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer # Serializzatore per il valore del produttore
     consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      group-id: banking-group
-      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # Deserializzatore per la chiave del consumatore
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer # Deserializzatore per il valore del consumatore
+      group-id: banking-group # Gruppo consumer per le transazioni bancarie
+      auto-offset-reset: earliest # Imposta il reset automatico dell'offset all'inizio del topic
       properties:
         spring.json.trusted.packages: it.alex.kafka.banking.model # specifica i pacchetti fidati per la deserializzazione
         spring.json.value.default.type: it.alex.kafka.banking.model.TransactionEvent # specifica il tipo di evento da deserializzare
