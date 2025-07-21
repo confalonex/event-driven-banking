@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Kafka Streams ###
+event-driven-banking/
+kafka-streams-state/
