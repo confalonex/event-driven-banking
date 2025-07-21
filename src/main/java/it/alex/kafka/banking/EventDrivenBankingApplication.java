@@ -14,7 +14,7 @@ public class EventDrivenBankingApplication {
 	 * Metodo di ingresso principale dell'applicazione.
 	 * Esegue l'avvio del contesto Spring.
 	 *
-	 * @param args argomenti da linea di comando (non usati)
+	 * @param args argomenti da linea di comando
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(EventDrivenBankingApplication.class, args);

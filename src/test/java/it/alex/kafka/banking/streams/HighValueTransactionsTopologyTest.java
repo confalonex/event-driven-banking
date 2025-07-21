@@ -10,18 +10,19 @@ import org.apache.kafka.streams.TestOutputTopic;
 import org.apache.kafka.streams.test.TestRecord;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.support.serializer.JsonSerde;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Simple test verifying the Kafka Streams topology filters high value transactions.
+ * Test per la topologia Kafka Streams che filtra le transazioni di alto valore.
  */
 class HighValueTransactionsTopologyTest {
 
+    /**
+     * Test che verifica il corretto funzionamento della topologia Kafka Streams per filtrare le transazioni di alto valore.
+     */
     @Test
     void testFiltering() {
         KafkaStreamsTopology config = new KafkaStreamsTopology();
@@ -36,12 +37,12 @@ class HighValueTransactionsTopologyTest {
             TestOutputTopic<String, TransactionEvent> output = driver.createOutputTopic(
                     "high-value-transactions", Serdes.String().deserializer(), serde.deserializer());
 
-            // send low value
+            // invia una transazione di basso valore
             TransactionEvent low = new TransactionEvent(UUID.randomUUID().toString(),
                     "A1", 100, "deposit", LocalDateTime.now());
             input.pipeInput(low.getTransactionId(), low);
 
-            // send high value
+            // invia una transazione di alto valore
             TransactionEvent high = new TransactionEvent(UUID.randomUUID().toString(),
                     "A1", 1500, "deposit", LocalDateTime.now());
             input.pipeInput(high.getTransactionId(), high);

@@ -9,13 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
  * Componente eseguito automaticamente all'avvio dell'applicazione.
- * Invia eventi Kafka di test (transazione e allerta sicurezza) e ne stampa lo storico ricevuto.
+ * Invia eventi Kafka di test e ne stampa lo storico ricevuto.
  */
 @Component
 @Profile("dev")
@@ -45,7 +44,7 @@ public class StartupRunner implements CommandLineRunner {
         TransactionEvent transaction = new TransactionEvent(
                 UUID.randomUUID().toString(),
                 "ACC123456",
-                150.0,
+                1050.0,
                 "deposit",
                 LocalDateTime.now()
         );

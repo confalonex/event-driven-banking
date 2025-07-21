@@ -16,7 +16,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 
 /**
  * Definisce una topologia Kafka Streams che filtra le transazioni di alto valore e le invia a un topic dedicato.
- * Gli ID di transazione duplicati vengono gestiti tramite una KTable, fornendo un semplice meccanismo di idempotenza.
+ * Gli ID di transazione duplicati vengono gestiti tramite una KTable, fornendo un meccanismo di idempotenza.
  */
 @EnableKafkaStreams
 @Configuration

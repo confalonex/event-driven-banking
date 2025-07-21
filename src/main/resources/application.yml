@@ -19,7 +19,7 @@ spring:
     streams:
       state-dir: /tmp/kafka-streams # Directory per lo stato di Kafka Streams
       properties:
-        cleanup.on.start: true # Pulisce lo stato all'avvio
+        cleanup.on.start: true # Stato all'avvio - true: pulisce lo stato esistente, false: mantiene lo stato esistente
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer # Serializzatore per la chiave del produttore
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer # Serializzatore per il valore del produttore
@@ -27,13 +27,13 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # Deserializzatore per la chiave del consumatore
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer # Deserializzatore per il valore del consumatore
       group-id: banking-group # Gruppo consumer per le transazioni bancarie
-      auto-offset-reset: earliest # Imposta il reset automatico dell'offset all'inizio del topic
+      auto-offset-reset: earliest # Imposta il reset automatico dell'offset del topic - earliest: inizia dalla prima transazione disponibile, latest: inizia dalle nuove transazioni, none: non consuma se non ci sono offset salvati
       properties:
-        spring.json.trusted.packages: it.alex.kafka.banking.model # specifica i pacchetti fidati per la deserializzazione
-        spring.json.value.default.type: it.alex.kafka.banking.model.TransactionEvent # specifica il tipo di evento da deserializzare
+        spring.json.trusted.packages: it.alex.kafka.banking.model # Specifica i pacchetti fidati per la deserializzazione
+        spring.json.value.default.type: it.alex.kafka.banking.model.TransactionEvent # Specifica il tipo di evento da deserializzare
 
 logging:
   level:
-    root: ERROR # pulisce i log di Spring Boot
-    org.apache.kafka.streams.processor.internals.StateDirectory: OFF # disabilita i log di Kafka Streams
-    it.alex.kafka.banking: INFO # log della nostra applicazione
+    root: ERROR # Log di Spring Boot - ERROR: mostra solo gli errori, INFO: mostra anche le informazioni, DEBUG: mostra anche i dettagli di debug
+    org.apache.kafka.streams.processor.internals.StateDirectory: OFF # Log di Kafka Streams - OFF: disabilita i log, ERROR: mostra solo gli errori, INFO: mostra anche le informazioni, DEBUG: mostra anche i dettagli di debug
+    it.alex.kafka.banking: INFO # Log della nostra applicazione - INFO: mostra le informazioni, DEBUG: mostra anche i dettagli di debug

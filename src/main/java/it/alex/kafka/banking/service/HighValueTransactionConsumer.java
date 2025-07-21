@@ -4,7 +4,6 @@ import it.alex.kafka.banking.model.TransactionEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.function.Consumer;
 
 /**
@@ -20,7 +19,7 @@ public class HighValueTransactionConsumer {
     @Bean
     public Consumer<TransactionEvent> highValueConsumer() {
         return event -> {
-            log.info("[CloudStream] High value transaction: {}", event);
+            log.info("[CloudStream] Transazione ad alto valore: {}", event);
         };
     }
 }

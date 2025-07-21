@@ -13,18 +13,27 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerde;
-
 import java.time.LocalDateTime;
 import java.util.Properties;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test per la topologia Kafka Streams che filtra le transazioni di alto valore.
+ */
 class KafkaStreamsTopologyTest {
 
+    /** Driver per testare la topologia Kafka Streams */
     private TopologyTestDriver driver;
+
+    /** input topic per le transazioni */
     private TestInputTopic<String, TransactionEvent> input;
+
+    /** output topic per le transazioni di alto valore */
     private TestOutputTopic<String, TransactionEvent> output;
 
+    /**
+     * Configura il driver e i topic prima di ogni test.
+     */
     @BeforeEach
     void setup() {
         StreamsBuilder builder = new StreamsBuilder();
@@ -38,11 +47,15 @@ class KafkaStreamsTopologyTest {
         driver = new TopologyTestDriver(topology, props);
 
         JsonSerde<TransactionEvent> serde = new JsonSerde<>(TransactionEvent.class);
+
+        // Crea l'input topic per le transazioni
         input = driver.createInputTopic(
                 "transactions",
                 Serdes.String().serializer(),
                 serde.serializer()
         );
+
+        // Crea l'output topic per le transazioni di alto valore
         output = driver.createOutputTopic(
                 "high-value-transactions",
                 Serdes.String().deserializer(),
@@ -50,11 +63,18 @@ class KafkaStreamsTopologyTest {
         );
     }
 
+    /**
+     * Chiude il driver dopo ogni test.
+     */
     @AfterEach
     void tearDown() {
         driver.close();
     }
 
+    /**
+     * Verifica che le transazioni di alto valore vengano correttamente filtrate e inviate al topic dedicato.
+     * Invia una transazione di alto valore e verifica che sia presente nell'output.
+     */
     @Test
     void whenHighValue_thenOutput() {
         TransactionEvent event = new TransactionEvent(
@@ -71,6 +91,9 @@ class KafkaStreamsTopologyTest {
         assertEquals(1, output.readRecordsToList().size()); // Verifica che ci sia un record
     }
 
+    /**
+     * Verifica che le transazioni di basso valore non vengano emesse nel topic di alto valore.
+     */
     @Test
     void whenLowValue_thenNoOutput() {
         TransactionEvent event = new TransactionEvent(
