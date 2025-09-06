@@ -1,36 +1,30 @@
 spring:
-  application:
-    name: event-driven-banking # Nome dell'applicazione
-  profiles:
-    active: dev # Profilo attivo per l'ambiente di sviluppo
-
-  cloud:
-    stream:
-      bindings:
-        highValueConsumer-in-0:
-          destination: high-value-transactions # Nome del topic Kafka per le transazioni ad alto valore
-          group: high-value-group # Gruppo consumer per le transazioni ad alto valore
-      kafka:
-        binder:
-          brokers: localhost:9092 # Broker Kafka
-
   kafka:
-    bootstrap-servers: localhost:9092 # Indirizzo del broker Kafka
-    streams:
-      state-dir: /tmp/kafka-streams # Directory per lo stato di Kafka Streams
-      properties:
-        cleanup.on.start: true # Stato all'avvio - true: pulisce lo stato esistente, false: mantiene lo stato esistente
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer # Serializzatore per la chiave del produttore
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer # Serializzatore per il valore del produttore
+    bootstrap-servers: localhost:9092
     consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # Deserializzatore per la chiave del consumatore
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer # Deserializzatore per il valore del consumatore
-      group-id: banking-group # Gruppo consumer per le transazioni bancarie
-      auto-offset-reset: earliest # Imposta il reset automatico dell'offset del topic - earliest: inizia dalla prima transazione disponibile, latest: inizia dalle nuove transazioni, none: non consuma se non ci sono offset salvati
+      group-id: default-group
+      auto-offset-reset: earliest
       properties:
-        spring.json.trusted.packages: it.alex.kafka.banking.model # Specifica i pacchetti fidati per la deserializzazione
-        spring.json.value.default.type: it.alex.kafka.banking.model.TransactionEvent # Specifica il tipo di evento da deserializzare
+        spring.json.trusted.packages: "*"
+    producer:
+      # impostazioni base (per questo esempio lasciamo il default)
+      properties:
+        spring.json.add.type.headers: false
+
+app:
+  topic:
+    transactions: transactions
+    validated-transactions: validated-transactions
+    confirmed-transactions: confirmed-transactions
+
+  confirm:
+    # quanto spesso esegue il scheduler (ms)
+    delay:
+      ms: 5000
+    # soglia "older than" per confermare notifiche (secondi)
+    threshold:
+      seconds: 5
+
 
 logging:
   level:

@@ -1,32 +1,21 @@
 package it.alex.kafka.banking.model;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import java.time.LocalDateTime;
 
-/**
- * Rappresenta un evento di transazione bancaria da inviare tramite Kafka.
- */
-@Getter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class TransactionEvent {
-
-    /** Identificativo univoco della transazione */
     private String transactionId;
-
-    /** Identificativo del conto associato */
-    private String accountId;
-
-    /** Importo della transazione */
-    private double amount;
-
-    /** Tipo dell’operazione */
-    private String type;
-
-    /** Timestamp di generazione dell’evento */
-    private LocalDateTime timestamp;
+    private Account fromAccount;
+    private Account toAccount;
+    private BigDecimal amount;
+    private Instant createdAt;
+    private String status; // e.g. INITIATED, VALIDATED, NOTIFIED, CONFIRMED, REJECTED
 }
