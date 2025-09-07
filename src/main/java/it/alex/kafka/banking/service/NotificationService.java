@@ -9,11 +9,16 @@ import it.alex.kafka.banking.model.ValidatedTransactionEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servizio per la gestione delle notifiche agli utenti.
+ * Simula l'invio di notifiche e registra gli eventi di notifica.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
 
+    /** Servizio per la registrazione delle notifiche */
     private final NotificationRegistryService registry;
 
     /**
@@ -23,7 +28,7 @@ public class NotificationService {
      */
     public void notifyUser(ValidatedTransactionEvent v) {
         if (v == null || !v.isValid()) {
-            log.info("NotificationService -> skip notify for txId={} valid={}",
+            log.info("NotificationService -> notifica saltata per txId={} valid={}",
                     v == null ? "null" : v.getTransactionId(), v == null ? false : v.isValid());
             return;
         }
@@ -43,7 +48,7 @@ public class NotificationService {
                 .readAt(null)
                 .build();
 
-        log.info("ValidationService -> sent notification for txId={} to user={}",
+        log.info("ValidationService -> notifica inviata per txId={} all'utente={}",
                 n.getTransactionId(), n.getFromAccount().getOwner());
         registry.register(n);
     }

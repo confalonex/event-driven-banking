@@ -11,13 +11,28 @@ import it.alex.kafka.banking.model.ValidatedTransactionEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Servizio per la validazione delle transazioni.
+ * Verifica che le transazioni rispettino determinate regole di validità
+ * e invia gli eventi di transazione validata al topic Kafka appropriato.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ValidationService {
 
+    /** Produttore Kafka per inviare transazioni validate */
     private final ValidatedInitiatedTransactionProducer validatedProducer;
 
+    /**
+     * Valida una transazione e invia l'evento di transazione validata.
+     * Le regole di validità includono:
+     * - L'importo deve essere positivo.
+     * - Gli account di origine e destinazione non devono essere nulli.
+     * - Gli account di origine e destinazione non devono essere gli stessi.
+     *
+     * @param tx L'evento di transazione da validare
+     */
     public void validate(TransactionEvent tx) {
         if (tx == null) return;
 

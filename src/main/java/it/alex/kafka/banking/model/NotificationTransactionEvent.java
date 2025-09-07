@@ -7,21 +7,49 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Rappresenta un evento di notifica di una transazione.
+ * Contiene informazioni sulla transazione, lo stato della notifica e i timestamp rilevanti.
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationTransactionEvent {
+
+    /** ID univoco della transazione */
     private String transactionId;
-    private Account fromAccount;  // destinatario della notifica (es. owner fromAccount)
+
+    /** Account di origine della transazione */
+    private Account fromAccount;
+
+    /** Account di destinazione della transazione */
     private Account toAccount;
+
+    /** Importo della transazione */
     private BigDecimal amount;
+
+    /** Timestamp di creazione dell'evento */
     private Instant createdAt;
+
+    /** Stato della transazione (es. "SENT", "READ") */
     private String status;
+
+    /** Validità della transazione */
     private boolean valid;
-    private String reason; // breve motivazione se invalid
+
+    /** Motivazione se la transazione non è valida */
+    private String reason;
+
+    /** Timestamp di validazione della transazione */
     private Instant validatedAt;
-    private String notificationStatus; // SENT, READ
+
+    /** Stato della notifica (es. "SENT", "READ") */
+    private String notificationStatus;
+
+    /** Timestamp di invio della notifica */
     private Instant sentAt;
-    private Instant readAt; // nullable, valorizzato quando utente "visualizza"
+
+    /** Timestamp di lettura della notifica */
+    private Instant readAt;
 }

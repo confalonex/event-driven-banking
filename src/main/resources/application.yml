@@ -7,7 +7,6 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
     producer:
-      # impostazioni base (per questo esempio lasciamo il default)
       properties:
         spring.json.add.type.headers: false
 
@@ -18,12 +17,10 @@ app:
     confirmed-transactions: confirmed-transactions
 
   confirm:
-    # quanto spesso esegue il scheduler (ms)
     delay:
-      ms: 5000
-    # soglia "older than" per confermare notifiche (secondi)
+      ms: 5000    # quanto spesso esegue il scheduler (ms)
     threshold:
-      seconds: 5
+      seconds: 5  # soglia "older than" per confermare notifiche (secondi)
 
 
 logging:

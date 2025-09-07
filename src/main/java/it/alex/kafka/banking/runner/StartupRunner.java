@@ -14,17 +14,30 @@ import it.alex.kafka.banking.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Componente che esegue operazioni all'avvio dell'applicazione.
+ * Simula la creazione di account e l'invio di transazioni iniziate.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class StartupRunner implements CommandLineRunner {
 
+    /** Numero di transazioni da simulare all'avvio */
     private final InitiatedTransactionProducer initiatedProducer;
+
+    /** Servizio per la gestione degli account */
     private final AccountService accountService;
 
+    /**
+     * Metodo eseguito all'avvio dell'applicazione per simulare la creazione di account
+     * e l'invio di transazioni iniziate.
+     *
+     * @param args Argomenti della riga di comando
+     */
     @Override
     public void run(String... args) {
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= 3; i++) {
             String txId = UUID.randomUUID().toString();
 
             Account from = Account.builder()
@@ -33,7 +46,7 @@ public class StartupRunner implements CommandLineRunner {
                     .balance(new BigDecimal("1000.00"))
                     .build();
 
-            log.info("StartupRunner -> from account: {}", from);
+            log.info("StartupRunner -> da account: {}", from);
 
             Account to = Account.builder()
                     .accountId("acc-to-" + i)
@@ -41,9 +54,9 @@ public class StartupRunner implements CommandLineRunner {
                     .balance(new BigDecimal("100.00"))
                     .build();
 
-            log.info("StartupRunner -> to account: {}", to);
+            log.info("StartupRunner -> a account: {}", to);
 
-            // registra gli account nello store in-memory
+            // registra gli account in memoria
             accountService.register(from);
             accountService.register(to);
 
@@ -56,7 +69,7 @@ public class StartupRunner implements CommandLineRunner {
                     .status("INITIATED")
                     .build();
 
-            log.info("StartupRunner -> sending initiated txId={}", txId);
+            log.info("StartupRunner -> inviando transazione inizializzata txId={}", txId);
             initiatedProducer.sendInitiated(tx);
 
             try {
