@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Componente che esegue operazioni all'avvio dell'applicazione.
+ * Componente che esegue operazioni all'avvio dell'applicazione.<br>
  * Simula la creazione di account e l'invio di transazioni iniziate.
  */
 @Component
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StartupRunner implements CommandLineRunner {
 
-    /** Numero di transazioni da simulare all'avvio */
+    /** Produttore Kafka per le transazioni iniziate */
     private final InitiatedTransactionProducer initiatedProducer;
 
     /** Servizio per la gestione degli account */
@@ -37,7 +37,7 @@ public class StartupRunner implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 1; i++) {
             String txId = UUID.randomUUID().toString();
 
             Account from = Account.builder()

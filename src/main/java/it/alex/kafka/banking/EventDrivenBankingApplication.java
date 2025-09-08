@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Classe principale dell'applicazione Spring Boot.
+ * Classe principale dell'applicazione Spring Boot.<br>
  * Avvia il contesto e inizializza tutti i componenti.
  */
 @SpringBootApplication
@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class EventDrivenBankingApplication {
 
 	/**
-	 * Metodo di ingresso principale dell'applicazione.
+	 * Metodo di ingresso principale dell'applicazione.<br>
 	 * Esegue l'avvio del contesto Spring.
 	 *
 	 * @param args argomenti da linea di comando

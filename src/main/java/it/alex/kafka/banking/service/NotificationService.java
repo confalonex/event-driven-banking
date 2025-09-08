@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Servizio per la gestione delle notifiche agli utenti.
+ * Servizio per la gestione delle notifiche agli utenti.<br>
  * Simula l'invio di notifiche e registra gli eventi di notifica.
  */
 @Service
@@ -22,9 +22,8 @@ public class NotificationService {
     private final NotificationRegistryService registry;
 
     /**
-     * Simula l'invio della notifica e la registra per il cron che la confermerà.
-     * Non produce la conferma qui: quella la fa il scheduler/ConfirmationService.
-     * Qui si limita a creare l'evento di notifica e registrarlo.
+     * Simula l'invio della notifica e la registra per il cron che la confermerà.<br>
+     * Crea l'evento di notifica e lo registra.
      */
     public void notifyUser(ValidatedTransactionEvent v) {
         if (v == null || !v.isValid()) {

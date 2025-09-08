@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Rappresenta un evento di transazione.
+ * Rappresenta un evento di transazione.<br>
  * Contiene informazioni sulla transazione, gli account coinvolti, l'importo,
  * il timestamp di creazione e lo stato della transazione.
  */

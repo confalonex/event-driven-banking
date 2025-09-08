@@ -11,7 +11,7 @@ import it.alex.kafka.banking.model.Account;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Servizio per la gestione degli account bancari in memoria.
+ * Servizio per la gestione degli account bancari in memoria.<br>
  * Fornisce metodi per registrare account, recuperare account,
  * applicare trasferimenti e loggare i saldi degli account.
  */
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AccountService {
 
-    /** Mappa concorrente per memorizzare gli account in memoria */
+    /** Mappa per memorizzare gli account in memoria */
     private final Map<String, Account> accounts = new ConcurrentHashMap<>();
 
     /**
@@ -78,7 +78,7 @@ public class AccountService {
     }
 
     /**
-     * Logga i saldi di tutti gli account registrati.
+     * Logga i saldi di tutti gli account registrati
      */
     public void logAllBalances() {
         accounts.values().forEach(a ->

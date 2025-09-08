@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Servizio per la validazione delle transazioni.
+ * Servizio per la validazione delle transazioni.<br>
  * Verifica che le transazioni rispettino determinate regole di validità
  * e invia gli eventi di transazione validata al topic Kafka appropriato.
  */
@@ -25,10 +25,10 @@ public class ValidationService {
     private final ValidatedInitiatedTransactionProducer validatedProducer;
 
     /**
-     * Valida una transazione e invia l'evento di transazione validata.
-     * Le regole di validità includono:
-     * - L'importo deve essere positivo.
-     * - Gli account di origine e destinazione non devono essere nulli.
+     * Valida una transazione e invia l'evento di transazione validata.<br>
+     * Le regole di validità includono:<br>
+     * - L'importo deve essere positivo.<br>
+     * - Gli account di origine e destinazione non devono essere nulli.<br>
      * - Gli account di origine e destinazione non devono essere gli stessi.
      *
      * @param tx L'evento di transazione da validare

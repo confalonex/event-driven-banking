@@ -20,7 +20,7 @@ public class NotificationTransactionConsumer {
     private final NotificationService notificationService;
 
     /**
-     * Metodo che ascolta il topic Kafka per eventi di transazioni validate.
+     * Metodo che ascolta il topic Kafka per eventi di transazioni validate.<br>
      * Quando riceve un evento, logga le informazioni e notifica l'utente.
      *
      * @param tx Evento di transazione validata ricevuto dal topic
