@@ -3,6 +3,7 @@ package it.alex.kafka.banking.kafka.scheduler;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
  * La soglia di tempo può essere configurata tramite la proprietà
  * "app.confirm.threshold.seconds".
  * Il delay tra le esecuzioni del controllo può essere configurato tramite la
- * proprietà "app.confirm.delay.ms".
+ * proprietà "app.confirm.delay.ms".<br><br>
+ * Il componente è abilitato solo se la proprietà "app.confirm.enabled" è
+ * impostata a true (default true).
  */
+@ConditionalOnProperty(prefix = "app.confirm", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Component
 @RequiredArgsConstructor
 @Slf4j

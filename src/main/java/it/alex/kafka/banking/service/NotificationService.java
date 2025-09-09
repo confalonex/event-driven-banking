@@ -4,6 +4,8 @@ import java.time.Instant;
 
 import org.springframework.stereotype.Service;
 
+import it.alex.kafka.banking.kafka.producer.ConfirmedTransactionProducer;
+import it.alex.kafka.banking.model.ConfirmedTransactionEvent;
 import it.alex.kafka.banking.model.NotificationTransactionEvent;
 import it.alex.kafka.banking.model.ValidatedTransactionEvent;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Servizio per la gestione delle notifiche agli utenti.<br>
- * Simula l'invio di notifiche e registra gli eventi di notifica.
+ * Riceve eventi di transazioni validate, notifica gli utenti e produce eventi di transazioni confermate.
  */
 @Service
 @RequiredArgsConstructor
@@ -21,9 +23,13 @@ public class NotificationService {
     /** Servizio per la registrazione delle notifiche */
     private final NotificationRegistryService registry;
 
+    /** Produttore Kafka per le transazioni confermate */
+    private final ConfirmedTransactionProducer confirmedProducer;
+
     /**
-     * Simula l'invio della notifica e la registra per il cron che la confermerà.<br>
-     * Crea l'evento di notifica e lo registra.
+     * Notifica l'utente di una transazione validata e produce un evento di transazione confermata.
+     *
+     * @param v Evento di transazione validata
      */
     public void notifyUser(ValidatedTransactionEvent v) {
         if (v == null || !v.isValid()) {
@@ -50,5 +56,22 @@ public class NotificationService {
         log.info("NotificationService -> notifica inviata per txId={} all'utente={}",
                 n.getTransactionId(), n.getFromAccount().getOwner());
         registry.register(n);
+
+        registry.markRead(n.getTransactionId());
+
+        ConfirmedTransactionEvent c = ConfirmedTransactionEvent.builder()
+                .transactionId(n.getTransactionId())
+                .fromAccount(n.getFromAccount())
+                .toAccount(n.getToAccount())
+                .amount(n.getAmount())
+                .createdAt(n.getCreatedAt())
+                .status("CONFIRMED")
+                .valid(n.isValid())
+                .reason(n.getReason())
+                .validatedAt(n.getValidatedAt())
+                .confirmedAt(Instant.now())
+                .build();
+
+        confirmedProducer.sendConfirmed(c);
     }
 }

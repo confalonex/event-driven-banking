@@ -1,28 +1,30 @@
+# Configurazione principale dell'applicazione
 spring:
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: default-group
-      auto-offset-reset: earliest
-      properties:
-        spring.json.trusted.packages: "*"
-    producer:
-      properties:
-        spring.json.add.type.headers: false
+  kafka:  # Configurazione Kafka
+    bootstrap-servers: localhost:9092  # Indirizzo del server Kafka
+    consumer:  # Configurazione del consumer Kafka
+      group-id: default-group  # ID del gruppo di consumer
+      auto-offset-reset: earliest  # Strategia di reset degli offset: 'earliest' significa che il consumer inizierà a leggere dal messaggio più vecchio disponibile
+      properties:  # Proprietà aggiuntive per il consumer
+        spring.json.trusted.packages: "*"  # Pacchetti trusted per la deserializzazione JSON, "*" significa tutti i pacchetti sono trusted
+    producer:  # Configurazione del producer Kafka
+      properties:  # Proprietà aggiuntive per il producer
+        spring.json.add.type.headers: false  # Se abilitato, aggiunge intestazioni di tipo JSON ai messaggi prodotti
 
+# Configurazione specifica dell'applicazione
 app:
-  topic:
-    transactions: transactions
-    validated-transactions: validated-transactions
-    confirmed-transactions: confirmed-transactions
-
-  confirm:
-    delay:
+  topic:  # Definizione dei topic Kafka utilizzati dall'applicazione
+    transactions: transactions  # Nome del topic per le transazioni
+    validated-transactions: validated-transactions  # Nome del topic per le transazioni validate
+    confirmed-transactions: confirmed-transactions  # Nome del topic per le transazioni confermate
+  confirm:  # Configurazione per la conferma delle transazioni
+    enabled: false # Abilita o disabilita la conferma delle transazioni
+    delay:  # Configurazione del ritardo per il scheduler
       ms: 5000    # quanto spesso esegue il scheduler (ms)
-    threshold:
+    threshold:  # Configurazione della soglia per la conferma delle notifiche
       seconds: 5  # soglia "older than" per confermare notifiche (secondi)
 
-
+# Configurazione dei livelli di log
 logging:
   level:
     root: ERROR # Log di Spring Boot - ERROR: mostra solo gli errori, INFO: mostra anche le informazioni, DEBUG: mostra anche i dettagli di debug
