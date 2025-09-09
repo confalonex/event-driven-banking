@@ -46,9 +46,10 @@ public class NotificationConfirmationScheduler {
      * Metodo schedulato che controlla periodicamente le notifiche inviate
      * e conferma quelle che non sono state lette entro la soglia di tempo
      * specificata.<br><br>
-     * Viene eseguito ogni "app.confirm.delay.ms" millisecondi.
+     * Il metodo viene eseguito in base alla cron expression
+     * specificata nella proprietà "app.confirm.cron" (default ogni 5 secondi).
      */
-    @Scheduled(fixedDelayString = "${app.confirm.delay.ms:2000}")
+    @Scheduled(cron = "${app.confirm.cron:0/5 * * * * *}")
     public void checkAndConfirm() {
         List<String> toConfirm = registry.findSentOlderThanSeconds(thresholdSeconds);
         if (toConfirm.isEmpty()) return;

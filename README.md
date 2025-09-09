@@ -52,7 +52,7 @@ app:
     confirmed-transactions: confirmed-transactions
 
   confirm:
-    enabled: false   # scheduler disabilitato (conferma avviene subito)
+    enabled: true   # scheduler abilitato (conferma avviene subito)
 ```
 
 ---
@@ -74,7 +74,7 @@ ConfirmedTransactionConsumer -> applicato trasferimento txId=123
 
 ## ✨ Caratteristiche
 
-* **Conferma immediata delle notifiche** (niente delay o scheduler).
+* **Event-Driven**: ogni step è un evento Kafka.
 * **Storico eventi in memoria** per debugging.
 * **AccountService** mantiene i saldi aggiornati.
 * **Idempotenza base** (notifiche già confermate non vengono duplicate).

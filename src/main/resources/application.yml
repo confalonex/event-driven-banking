@@ -19,8 +19,7 @@ app:
     confirmed-transactions: confirmed-transactions  # Nome del topic per le transazioni confermate
   confirm:  # Configurazione per la conferma delle transazioni
     enabled: true # Abilita o disabilita la conferma delle transazioni
-    delay:  # Configurazione del ritardo per il scheduler
-      ms: 5000    # quanto spesso esegue il scheduler (ms)
+    cron: "0/5 * * * * *" # ogni 5 secondi
     threshold:  # Configurazione della soglia per la conferma delle notifiche
       seconds: 5  # soglia "older than" per confermare notifiche (secondi)
 
