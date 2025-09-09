@@ -1,112 +1,89 @@
-# Event‑Driven Banking
+# Event-Driven Banking (Spring Boot + Kafka)
 
-Applicazione demo che simula una piattaforma bancaria basata su eventi in tempo reale con **Spring Boot** e **Apache Kafka**.
+Progetto dimostrativo di un sistema bancario **event-driven** basato su **Spring Boot** e **Apache Kafka**.  
+Ogni step della transazione è gestito tramite eventi pubblicati e consumati da topic Kafka.
 
-## Caratteristiche
+---
 
-* Pipeline asincrona su Kafka con i topic **transactions**, **security‑alerts** e **high‑value‑transactions**.
-* Filtraggio e deduplicazione in streaming con Kafka Streams.
-* Consumer sia nativi (Spring Kafka) che dichiarativi (Spring Cloud Stream).
-* Avvio one‑command via Docker‑Compose (Kafka in modalità **KRaft**).
-* Strategie di resilienza già integrate (state store, offset, idempotenza).
+## 🚀 Architettura
 
-## Stack Tecnologico
+**Flusso principale:**
+1. Produzione di un `ValidatedTransactionEvent`.
+2. Consumo da `NotificationTransactionConsumer` → generazione notifica.
+3. `NotificationService` → invio notifica e conferma immediata (`ConfirmedTransactionEvent`).
+4. Consumo da `ConfirmedTransactionConsumer` → aggiornamento saldi su `AccountService`.
 
-| Livello           | Tecnologia                | Note      |
-| ----------------- | ------------------------- | --------- |
-| Framework         | Spring Boot 3.5 · Java 17 |           |
-| Messaggistica     | Apache Kafka 3.x (KRaft)  | Immagine `bitnami/kafka` |
-| Stream processing | Kafka Streams             | Integrato nell'app |
-| Abstraction layer | Spring Cloud Stream       | Binder Kafka |
-| Build             | Maven                     |           |
+```text
+[Producer] -> ValidatedTransactionEvent
+      ↓
+[Consumer] NotificationTransactionConsumer
+      ↓
+[Service] NotificationService (registra + conferma subito)
+      ↓
+[Producer] ConfirmedTransactionEvent
+      ↓
+[Consumer] ConfirmedTransactionConsumer
+      ↓
+[Service] AccountService (applyTransfer)
+````
 
-## Prerequisiti
+---
 
-* **Java 17+**
-* **Maven 3.9+**
-* **Docker**
+## 📂 Struttura pacchetti
 
-## Avvio rapido
+* `config` → configurazione Kafka.
+* `model` → classi evento (POJO).
+* `service` → logica di dominio (notifiche, account, storage eventi).
+* `kafka.producer` / `kafka.consumer` → publisher e subscriber Kafka.
+* `streams` → elaborazioni Kafka Streams.
+* `runner` → `StartupRunner` genera eventi all’avvio.
 
-```bash
-# Avvia Kafka (modalità detached)
-docker compose up -d
+---
 
-# Compila ed esegui l'app Spring Boot
-./mvnw spring-boot:run
+## ⚙️ Configurazione
+
+`application.yml` (estratto):
+
+```yaml
+app:
+  topic:
+    validated-transactions: validated-transactions
+    notification-transactions: notification-transactions
+    confirmed-transactions: confirmed-transactions
+
+  confirm:
+    enabled: false   # scheduler disabilitato (conferma avviene subito)
 ```
 
-`StartupRunner` profilo impostato su **dev** produce subito un `TransactionEvent` con amount pari a 1050 € e un `SecurityAlertEvent` per verificare la pipeline.
+---
 
-Stop servizi:
+## ▶️ Esecuzione
 
-```bash
-docker compose down -v
+1. Avvia Kafka (es. Docker Compose).
+2. Run applicazione Spring Boot.
+3. Log di esempio:
+
+```text
+ValidatedTransactionEvent -> inviato
+NotificationService -> notifica inviata per txId=123
+NotificationService -> conferma immediata txId=123
+ConfirmedTransactionConsumer -> applicato trasferimento txId=123
 ```
 
-## Struttura del progetto
+---
 
-```
-src/main/java/it/alex/kafka/banking
- ├── config      # Costanti topic
- ├── model       # DTO degli eventi
- ├── service     # Producer & consumer
- └── streams     # Topologia Kafka Streams
-```
+## ✨ Caratteristiche
 
-## Flusso degli eventi
+* **Conferma immediata delle notifiche** (niente delay o scheduler).
+* **Storico eventi in memoria** per debugging.
+* **AccountService** mantiene i saldi aggiornati.
+* **Idempotenza base** (notifiche già confermate non vengono duplicate).
+* Scheduler di conferma **disattivato** ma mantenuto per estensioni future.
 
-Il ciclo completo è composto da **tre fasi**.
+---
 
-1. **Produzione**
+## 🔮 Estensioni possibili
 
-   * `KafkaProducerService` → topic **transactions**
-   * `KafkaSecurityAlertProducerService` → topic **security‑alerts**
-
-2. **Elaborazione in streaming**
-
-   * `KafkaStreamsTopology` legge da **transactions**
-   * Filtra gli importi ≥ 1000 €
-   * Deduplica via `KTable` su `transactionId`
-   * Pubblica su **high‑value‑transactions**
-
-3. **Consumo**
-
-   * `KafkaConsumerService` → elabora tutte le transazioni
-   * `HighValueTransactionConsumer` → elabora solo quelle ad alto valore
-   * `KafkaSecurityAlertConsumerService` → gestisce gli alert
-
-```
-TransactionProducer --> (transactions) --> StreamsFilter --> (high-value-transactions) --> HighValueConsumer
-SecurityProducer    --> (security-alerts)  -------------------------------> SecurityAlertConsumer
-                                          \                            
-                                           +--> AllTransactionConsumer
-```
-
-*Le frecce rappresentano i topic Kafka; i blocchi sono classi Spring.*
-
-## Configurazione principale (`application.yml`)
-
-| Chiave                                                            | Valore default          | Descrizione           |
-| ----------------------------------------------------------------- | ----------------------- | --------------------- |
-| `spring.kafka.bootstrap-servers`                                  | `localhost:9092`        | Broker Kafka          |
-| `spring.kafka.streams.properties.cleanup.on.start`                | `true`              | Reset store all'avvio |
-| `spring.cloud.stream.bindings.highValueConsumer-in-0.destination` | `high-value-transactions` | Binding Cloud Stream  |
-
-## Test
-
-```bash
-./mvnw test
-```
-
-Test di unità e di topologia in `src/test`.
-
-## Strategie di resilienza
-
-* **Persistenza**: log Kafka, nessuna dipendenza da ZooKeeper.
-* **Idempotenza**: `KTable` chiave `transactionId` elimina duplicati.
-* **Offset** gestiti automaticamente dai consumer.
-
-## Licenza
-
-MIT. Vedi `LICENSE`.
+* REST API / UI per simulare la visualizzazione delle notifiche.
+* Persistenza eventi e saldi in database.
+* Idempotenza avanzata lato consumer.

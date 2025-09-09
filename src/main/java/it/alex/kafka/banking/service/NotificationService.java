@@ -59,6 +59,7 @@ public class NotificationService {
 
         registry.markRead(n.getTransactionId());
 
+        // commenta tutta questa parte se non vuoi confermare automaticamente
         ConfirmedTransactionEvent c = ConfirmedTransactionEvent.builder()
                 .transactionId(n.getTransactionId())
                 .fromAccount(n.getFromAccount())
