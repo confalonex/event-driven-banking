@@ -1,22 +1,24 @@
+# Configurazione Docker Compose per Redpanda, un broker Kafka compatibile.
+# Questo file definisce un servizio Redpanda con configurazioni specifiche per l'avvio e la persistenza dei dati.
+
 services:
-  redpanda:
-    image: redpandadata/redpanda:latest
-    container_name: redpanda
+  redpanda:  # Definizione del servizio Redpanda
+    image: redpandadata/redpanda:latest  # Immagine Docker ufficiale di Redpanda
+    container_name: redpanda  # Nome del container
     command: >
       redpanda start
-      --overprovisioned
-      --smp 1
-      --memory 1G
-      --reserve-memory 0M
-      --node-id 0
-      --check=false
+      --overprovisioned  # Abilita la modalità overprovisioned per migliorare le prestazioni
+      --smp 1  # Numero di core SMP da utilizzare
+      --memory 1G  # Quantità di memoria da allocare
+      --reserve-memory 0M  # Memoria riservata per il sistema
+      --node-id 0  # ID del nodo nel cluster
+      --check=false  # Disabilita i controlli pre-avvio
     ports:
-      - "9092:9092"
-      - "9644:9644"   # admin API (opzionale)
+      - "9092:9092"  # Porta per Kafka API (standard)
+      - "9644:9644"   # admin API (opzionale) - Porta per l'API di amministrazione (opzionale)
     volumes:
-      - redpanda-data:/var/lib/redpanda/data
+      - redpanda-data:/var/lib/redpanda/data  # Montaggio del volume per la persistenza dei dati
     environment:
-      - REDPANDA_AUTO_CREATE_TOPICS=false
-
+      - REDPANDA_AUTO_CREATE_TOPICS=false  # Disabilita la creazione automatica dei topic
 volumes:
-  redpanda-data:
+  redpanda-data:  # Definizione del volume per la persistenza dei dati
