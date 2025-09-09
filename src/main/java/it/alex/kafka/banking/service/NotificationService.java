@@ -47,7 +47,7 @@ public class NotificationService {
                 .readAt(null)
                 .build();
 
-        log.info("ValidationService -> notifica inviata per txId={} all'utente={}",
+        log.info("NotificationService -> notifica inviata per txId={} all'utente={}",
                 n.getTransactionId(), n.getFromAccount().getOwner());
         registry.register(n);
     }

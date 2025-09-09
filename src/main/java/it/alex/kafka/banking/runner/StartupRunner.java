@@ -78,8 +78,8 @@ public class StartupRunner implements CommandLineRunner {
                 Thread.currentThread().interrupt();
             }
 
-            log.info("StartupRunner -> involved accounts: from={}, to={}", from, to);
-            log.info("StartupRunner -> sent initiated transaction: {}", tx);
+            log.info("StartupRunner -> conti coinvolti: from={}, to={}", from, to);
+            log.info("StartupRunner -> transazione avviata inviata: {}", tx);
         }
     }
 }
