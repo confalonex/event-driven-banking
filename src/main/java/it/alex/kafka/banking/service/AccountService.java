@@ -1,7 +1,6 @@
 package it.alex.kafka.banking.service;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,25 +29,6 @@ public class AccountService {
     public void register(Account a) {
         if (a == null || a.getAccountId() == null) return;
         accounts.putIfAbsent(a.getAccountId(), a);
-    }
-
-    /**
-     * Recupera un account in base al suo ID.
-     *
-     * @param accountId L'ID dell'account da recuperare
-     * @return L'account corrispondente o null se non trovato
-     */
-    public Account get(String accountId) {
-        return accounts.get(accountId);
-    }
-
-    /**
-     * Recupera tutti gli account registrati.
-     *
-     * @return Una collezione di tutti gli account
-     */
-    public Collection<Account> all() {
-        return accounts.values();
     }
 
     /**
