@@ -1,7 +1,6 @@
 package it.alex.kafka.banking.kafka.producer;
 
 import it.alex.kafka.banking.model.ConfirmedTransactionEvent;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
  * Produttore Kafka per inviare eventi di transazioni confermate.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ConfirmedTransactionProducer {
 
@@ -19,8 +17,12 @@ public class ConfirmedTransactionProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /** Nome del topic Kafka per le transazioni confermate */
-    @Value("${app.topic.confirmed-transactions:confirmed-transactions}")
-    private String confirmedTopic;
+    private final String confirmedTopic;
+
+    public ConfirmedTransactionProducer(KafkaTemplate<String, Object> kafkaTemplate, @Value("${app.topic.confirmed-transactions:confirmed-transactions}") String confirmedTopic) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.confirmedTopic = confirmedTopic;
+    }
 
     /** Invia un evento di transazione confermata al topic Kafka.
      *

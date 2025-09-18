@@ -1,7 +1,6 @@
 package it.alex.kafka.banking.kafka.producer;
 
 import it.alex.kafka.banking.model.ValidatedTransactionEvent;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
  * Componente per l'invio di eventi di transazioni validate al topic Kafka.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ValidatedInitiatedTransactionProducer {
 
@@ -19,8 +17,12 @@ public class ValidatedInitiatedTransactionProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /** Nome del topic Kafka per le transazioni validate */
-    @Value("${app.topic.validated-transactions:validated-transactions}")
-    private String validatedTopic;
+    private final String validatedTopic;
+
+    public ValidatedInitiatedTransactionProducer(KafkaTemplate<String, Object> kafkaTemplate, @Value("${app.topic.validated-transactions:validated-transactions}") String validatedTopic) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.validatedTopic = validatedTopic;
+    }
 
     /** Invia un evento di transazione validata al topic Kafka.
      *

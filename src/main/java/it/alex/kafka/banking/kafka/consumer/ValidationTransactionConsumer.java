@@ -2,7 +2,6 @@ package it.alex.kafka.banking.kafka.consumer;
 
 import it.alex.kafka.banking.model.TransactionEvent;
 import it.alex.kafka.banking.service.ValidationService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -11,12 +10,15 @@ import org.springframework.stereotype.Component;
  * Componente che consuma gli eventi di transazione dal topic Kafka e li valida.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ValidationTransactionConsumer {
 
     /** Servizio per la validazione delle transazioni */
     private final ValidationService validationService;
+
+    public ValidationTransactionConsumer(ValidationService validationService) {
+        this.validationService = validationService;
+    }
 
     /**
      * Metodo che ascolta il topic Kafka per gli eventi di transazione e li valida.

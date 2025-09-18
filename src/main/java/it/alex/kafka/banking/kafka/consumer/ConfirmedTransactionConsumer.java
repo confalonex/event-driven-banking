@@ -2,7 +2,6 @@ package it.alex.kafka.banking.kafka.consumer;
 
 import it.alex.kafka.banking.model.ConfirmedTransactionEvent;
 import it.alex.kafka.banking.service.AccountService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -11,12 +10,15 @@ import org.springframework.stereotype.Component;
  * Consumatore Kafka per ricevere eventi di transazioni confermate.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ConfirmedTransactionConsumer {
 
     /** Servizio per la gestione degli account */
     private final AccountService accountService;
+
+    public ConfirmedTransactionConsumer(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     /** Ascolta il topic Kafka per le transazioni confermate.
      *

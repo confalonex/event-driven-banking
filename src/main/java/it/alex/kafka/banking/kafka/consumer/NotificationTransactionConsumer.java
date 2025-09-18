@@ -2,7 +2,6 @@ package it.alex.kafka.banking.kafka.consumer;
 
 import it.alex.kafka.banking.model.ValidatedTransactionEvent;
 import it.alex.kafka.banking.service.NotificationService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -12,12 +11,15 @@ import org.springframework.stereotype.Component;
  * e notifica l'utente in base alla validità della transazione.
  */
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class NotificationTransactionConsumer {
 
     /** Servizio per la gestione delle notifiche */
     private final NotificationService notificationService;
+
+    public NotificationTransactionConsumer(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
 
     /**
      * Metodo che ascolta il topic Kafka per eventi di transazioni validate.<br>
@@ -27,7 +29,7 @@ public class NotificationTransactionConsumer {
      */
     @KafkaListener(topics = "${app.topic.validated-transactions:validated-transactions}", groupId = "notification-group")
     public void listen(ValidatedTransactionEvent tx) {
-        log.info("NotificationTransactionConsumer -> ricevuto txId={} valid={}", tx == null ? "null" : tx.getTransactionId(), tx == null ? false : tx.isValid());
+        log.info("NotificationTransactionConsumer -> ricevuto txId={} valid={}", tx == null ? "null" : tx.getTransactionId(), tx != null && tx.isValid());
         notificationService.notifyUser(tx);
     }
 }

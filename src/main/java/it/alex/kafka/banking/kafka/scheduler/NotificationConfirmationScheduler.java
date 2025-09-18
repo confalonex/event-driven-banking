@@ -1,34 +1,33 @@
 package it.alex.kafka.banking.kafka.scheduler;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import it.alex.kafka.banking.kafka.producer.ConfirmedTransactionProducer;
 import it.alex.kafka.banking.model.ConfirmedTransactionEvent;
 import it.alex.kafka.banking.model.NotificationTransactionEvent;
 import it.alex.kafka.banking.service.NotificationRegistryService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Scheduler che periodicamente controlla le notifiche inviate e conferma
- * quelle che non sono state lette entro una soglia di tempo specificata.<br><br>
+ * quelle che non sono state lette entro una soglia di tempo specificata.
+ * <br><br>
  * Utilizza il servizio NotificationRegistryService per recuperare le notifiche
- * e il ConfirmedTransactionProducer per inviare gli eventi di conferma.<br><br>
+ * e il ConfirmedTransactionProducer per inviare gli eventi di conferma.
+ * <br><br>
  * La soglia di tempo può essere configurata tramite la proprietà
  * "app.confirm.threshold.seconds".
  * Il delay tra le esecuzioni del controllo può essere configurato tramite la
- * proprietà "app.confirm.delay.ms".<br><br>
+ * proprietà "app.confirm.delay.ms".
+ * <br><br>
  * Il componente è abilitato solo se la proprietà "app.confirm.enabled" è
  * impostata a true (default true).
  */
 @ConditionalOnProperty(prefix = "app.confirm", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class NotificationConfirmationScheduler {
 
@@ -39,13 +38,19 @@ public class NotificationConfirmationScheduler {
     private final ConfirmedTransactionProducer confirmedProducer;
 
     /** Soglia di tempo in secondi per considerare una notifica come non letta */
-    @Value("${app.confirm.threshold.seconds:5}")
-    private long thresholdSeconds;
+    private final long thresholdSeconds;
+
+    public NotificationConfirmationScheduler(NotificationRegistryService registry, ConfirmedTransactionProducer confirmedProducer, @Value("${app.confirm.threshold.seconds:5}") long thresholdSeconds) {
+        this.registry = registry;
+        this.confirmedProducer = confirmedProducer;
+        this.thresholdSeconds = thresholdSeconds;
+    }
 
     /**
      * Metodo schedulato che controlla periodicamente le notifiche inviate
      * e conferma quelle che non sono state lette entro la soglia di tempo
-     * specificata.<br><br>
+     * specificata.
+     * <br><br>
      * Il metodo viene eseguito in base alla cron expression
      * specificata nella proprietà "app.confirm.cron" (default ogni 5 secondi).
      */
@@ -63,18 +68,18 @@ public class NotificationConfirmationScheduler {
                 // marca come letta nella registry
                 registry.markRead(txId);
 
-                ConfirmedTransactionEvent c = ConfirmedTransactionEvent.builder()
-                        .transactionId(n.getTransactionId())
-                        .fromAccount(n.getFromAccount())
-                        .toAccount(n.getToAccount())
-                        .amount(n.getAmount())
-                        .createdAt(n.getCreatedAt())
-                        .status("CONFIRMED")
-                        .valid(n.isValid())
-                        .reason(n.getReason())
-                        .validatedAt(n.getValidatedAt())
-                        .confirmedAt(java.time.Instant.now())
-                        .build();
+                ConfirmedTransactionEvent c = new ConfirmedTransactionEvent(
+                        n.getTransactionId(),
+                        n.getFromAccount(),
+                        n.getToAccount(),
+                        n.getAmount(),
+                        n.getCreatedAt(),
+                        "CONFIRMED",
+                        n.isValid(),
+                        n.getReason(),
+                        n.getValidatedAt(),
+                        java.time.Instant.now()
+                );
 
                 confirmedProducer.sendConfirmed(c);
             } catch (Exception ex) {

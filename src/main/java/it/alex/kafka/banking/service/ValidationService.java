@@ -2,27 +2,28 @@ package it.alex.kafka.banking.service;
 
 import java.time.Instant;
 import java.util.Objects;
-
 import org.springframework.stereotype.Service;
-
 import it.alex.kafka.banking.kafka.producer.ValidatedInitiatedTransactionProducer;
 import it.alex.kafka.banking.model.TransactionEvent;
 import it.alex.kafka.banking.model.ValidatedTransactionEvent;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Servizio per la validazione delle transazioni.<br>
+ * Servizio per la validazione delle transazioni.
+ * <br>
  * Verifica che le transazioni rispettino determinate regole di validità
  * e invia gli eventi di transazione validata al topic Kafka appropriato.
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class ValidationService {
 
     /** Produttore Kafka per inviare transazioni validate */
     private final ValidatedInitiatedTransactionProducer validatedProducer;
+
+    public ValidationService(ValidatedInitiatedTransactionProducer validatedProducer) {
+        this.validatedProducer = validatedProducer;
+    }
 
     /**
      * Valida una transazione e invia l'evento di transazione validata.<br>
@@ -50,17 +51,17 @@ public class ValidationService {
             reason = "same-account";
         }
 
-        ValidatedTransactionEvent v = ValidatedTransactionEvent.builder()
-                .transactionId(tx.getTransactionId())
-                .fromAccount(tx.getFromAccount())
-                .toAccount(tx.getToAccount())
-                .amount(tx.getAmount())
-                .createdAt(tx.getCreatedAt())
-                .status(tx.getStatus())
-                .valid(valid)
-                .reason(reason)
-                .validatedAt(Instant.now())
-                .build();
+        ValidatedTransactionEvent v = new ValidatedTransactionEvent(
+                tx.getTransactionId(),
+                tx.getFromAccount(),
+                tx.getToAccount(),
+                tx.getAmount(),
+                tx.getCreatedAt(),
+                tx.getStatus(),
+                valid,
+                reason,
+                Instant.now()
+        );
 
         log.info("ValidationService -> txId={} valid={} reason={}", tx.getTransactionId(), valid, reason);
         validatedProducer.sendValidated(v);

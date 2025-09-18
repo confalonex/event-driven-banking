@@ -3,9 +3,7 @@ package it.alex.kafka.banking.service;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.stereotype.Service;
-
 import it.alex.kafka.banking.model.Account;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +59,8 @@ public class AccountService {
      * Logga i saldi di tutti gli account registrati
      */
     public void logAllBalances() {
-        accounts.values().forEach(a ->
-                log.info("AccountService -> accountId={} owner={} balance={}", a.getAccountId(), a.getOwner(), a.getBalance()));
+        for (Account a : accounts.values()) {
+            log.info("AccountService -> accountId={} owner={} balance={}", a.getAccountId(), a.getOwner(), a.getBalance());
+        }
     }
 }

@@ -1,18 +1,10 @@
 package it.alex.kafka.banking.model;
 
 import java.math.BigDecimal;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Rappresenta un account bancario con ID, proprietario e saldo.
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Account {
 
     /** ID univoco dell'account */
@@ -23,4 +15,37 @@ public class Account {
 
     /** Saldo corrente dell'account */
     private BigDecimal balance;
+
+    public Account() {
+    }
+
+    public Account(String accountId, String owner, BigDecimal balance) {
+        this.accountId = accountId;
+        this.owner = owner;
+        this.balance = balance;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 }
