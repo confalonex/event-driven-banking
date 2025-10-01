@@ -1,16 +1,14 @@
-package it.alex.kafka.banking;
+package it.alex.kafka.esercizi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * Classe principale dell'applicazione Spring Boot.<br>
  * Avvia il contesto e inizializza tutti i componenti.
  */
 @SpringBootApplication
-@EnableScheduling
-public class EventDrivenBankingApplication {
+public class StartApplication {
 
 	/**
 	 * Metodo di ingresso principale dell'applicazione.<br>
@@ -19,6 +17,6 @@ public class EventDrivenBankingApplication {
 	 * @param args argomenti da linea di comando
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(EventDrivenBankingApplication.class, args);
+		SpringApplication.run(StartApplication.class, args);
 	}
 }

@@ -18,11 +18,11 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>it.alex.kafka</groupId>
-	<artifactId>event-driven-banking</artifactId>
+	<groupId>it.alex.esercizi</groupId>
+	<artifactId>springboot</artifactId>
 	<version>1.0.0</version>
-	<name>event-driven-banking</name>
-	<description>Progetto event driven banking using Spring Boot</description>
+	<name>springboot</name>
+	<description>Progetto per esercitarmi in Spring Boot</description>
 	<url>https://github.com/confalonex/event-driven-banking</url>
 
 	<properties>
@@ -31,72 +31,10 @@
 	</properties>
 
 	<dependencies>
-		<!-- Kafka Streams (API native per stream processing) -->
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-streams</artifactId>
-		</dependency>
-
-		<!-- Spring Cloud Stream (programmazione basata su eventi) -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream</artifactId>
-		</dependency>
-
-		<!-- Binder per collegare Spring Cloud Stream a Kafka -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
-		</dependency>
-
-		<!-- Spring Kafka (producer/consumer Kafka) -->
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-
-		<!-- Devtools (hot reload in fase di sviluppo) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
-		</dependency>
-
-		<!-- Dipendenze per i test -->
-		<!-- Spring Boot Starter Test (JUnit) -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Dipendenze specifiche per test di Kafka e Spring Cloud Stream -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-test-binder</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Dipendenze per test di Kafka Streams -->
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- Dipendenze per test di Kafka Streams -->
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-streams-test-utils</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -120,7 +58,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<annotationProcessorPaths>
+					<annotationProcessorPaths>		<!-- Lombok -->
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
