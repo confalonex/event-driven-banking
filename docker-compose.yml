@@ -7,12 +7,12 @@ services:
     container_name: redpanda  # Nome del container
     command: >
       redpanda start
-      --overprovisioned  # Abilita la modalità overprovisioned per migliorare le prestazioni
-      --smp 1  # Numero di core SMP da utilizzare
-      --memory 1G  # Quantità di memoria da allocare
-      --reserve-memory 0M  # Memoria riservata per il sistema
-      --node-id 0  # ID del nodo nel cluster
-      --check=false  # Disabilita i controlli pre-avvio
+      --overprovisioned
+      --smp 1
+      --memory 1G
+      --reserve-memory 0M
+      --node-id 0
+      --check=false
     ports:
       - "9092:9092"  # Porta per Kafka API (standard)
       - "9644:9644"   # admin API (opzionale) - Porta per l'API di amministrazione (opzionale)
